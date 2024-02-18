@@ -1,9 +1,9 @@
 import React from "react";
 import { Image, Pressable, StyleSheet } from "react-native";
-import { Text, View } from "./Themed";
+import { Text } from "./Themed";
 import Colors from "../constants/Colors";
 import { Product } from "@/assets/types";
-import { Link } from "expo-router";
+import { Link, useSegments } from "expo-router";
 
 type ProductListItemProps = {
   product: Product;
@@ -14,9 +14,12 @@ const ProductListItem = ({ product }: ProductListItemProps) => {
   // view >  div without onclick
   // link > a with onclick
   // pressable > div with onclick
+  // (tab) > these are optional parameters. we don't need to give them.
+
+  const segments: string[] = useSegments();
+  if (!segments) return null;
   return (
-    // (tab) > these are optional parameters. we don't need to give them.
-    <Link href={`/menu/${product.id}`} asChild>
+    <Link href={`/${segments[0]}/menu/${product.id}`} asChild>
       <Pressable style={styles.container}>
         <Image
           resizeMode="contain" //whole image is visible
