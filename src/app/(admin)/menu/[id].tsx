@@ -1,11 +1,12 @@
 import React from "react";
 import { Text, View } from "../../../components/Themed";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
 import products from "@/assets/data/products";
 import { FlatList, Image, Pressable, StyleSheet } from "react-native";
 import Button from "@/src/components/Buttton";
 import { useCartContext } from "@/src/providers/CartProvider";
 import { Product } from "@/assets/types";
+import { FontAwesome } from "@expo/vector-icons";
 
 const sizes = ["S", "M", "L", "XL", "2XL"];
 const ProductDetailsScreen = () => {
@@ -26,7 +27,27 @@ const ProductDetailsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: product.name + id }} />
+      <Stack.Screen
+        // name="[id]"
+        options={{
+          title: product.name + id ,
+          headerRight: () => (
+            <Link href={`/(admin)/menu/create?id=${id}`} asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="pencil"
+                    size={25}
+                    // color={Colors[colorScheme ?? 'light'].text}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          ),
+        }}
+      />
+      {/* <Stack.Screen options={{ title: product.name + id }} /> */}
       <Image source={{ uri: product.image }} style={styles.image} />
 
       <Text>{product.name}</Text>

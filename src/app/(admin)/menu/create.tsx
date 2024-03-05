@@ -2,15 +2,20 @@ import Button from "@/src/components/Buttton";
 import React, { useState, useEffect } from 'react';
 import { Text, View } from "@/src/components/Themed";
 import Colors from "@/src/constants/Colors";
-import { Image, StyleSheet, TextInput } from "react-native";
+import { Alert, Image, StyleSheet, TextInput } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 const CreateProductScreen = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [errors, setErrors] = useState("");
   const [image, setImage] = useState(null);
+
+  const id = useLocalSearchParams().id;
+  console.log(id);
+  const isUpdating = !!id;
+  
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -20,7 +25,7 @@ const CreateProductScreen = () => {
       aspect: [4, 3],
       quality: 1,
     });
-    
+
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
@@ -32,10 +37,29 @@ const CreateProductScreen = () => {
     console.log(name);
     console.log(price);
   };
+  const onUpdateHandler = () => {
+    if (!validateInput()) return;
+    console.log(name);
+    console.log(price);
+  };
 
-  const resetFields = () => {
-    setName("");
-    setPrice("");
+  const onDeleteHandler = () => {
+    console.log("delete");
+    
+  }
+
+  const confirmDelete = () => {
+    Alert.alert("Confirm Delete", "Are you sure you want to delete this product?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+      },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: onDeleteHandler,
+      }
+    ])
   };
 
   const validateInput = () => {
@@ -59,7 +83,7 @@ const CreateProductScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: "Create Product" }}  />
+      <Stack.Screen options={{ title: isUpdating ? "Update Product" : "Create Product" }} />
 
       <Image source={{ uri: image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" }} style={styles.image} />
 
@@ -82,8 +106,9 @@ const CreateProductScreen = () => {
       />
       {errors && <Text style={{ color: "red" }}>{errors}</Text>}
 
-      <Button text="Submit" onPress={onCreateHandler} />
-      <Button text="Clear" onPress={resetFields} />
+      <Button text="Submit" onPress={ isUpdating ? onUpdateHandler : onCreateHandler} />
+      {/* <Button text="Clear" onPress={resetFields} /> */}
+     {isUpdating && <Button text="Delete" onPress={confirmDelete} />}
     </View>
   );
 };
