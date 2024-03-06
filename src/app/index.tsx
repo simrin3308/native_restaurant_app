@@ -6,6 +6,9 @@ import Button from '../components/Buttton';
 const index = () => {
   return (
     <View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>
+      <Link href={'/(auth)/sign-in'} asChild>
+        <Button text="Sign in" />
+      </Link>
       <Link href={'/(user)'} asChild>
         <Button text="User" />
       </Link>
